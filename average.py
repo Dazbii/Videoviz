@@ -87,9 +87,9 @@ def _handleAlgorithm(algorithm):
 
     
 
-def average(specifiedFilename = "", showVideo = True, skip = 8, algorithm = "", kmeansParameters = [5, 5, 0.1, 3]):
-    if specifiedFilename:
-        print("only processing file: " + specifiedFilename)
+def average(targetFile = "", showVideo = True, skip = 8, algorithm = "", kmeansParameters = [5, 5, 0.1, 3]):
+    if targetFile:
+        print("only processing file: " + targetFile)
     if skip != 8:
         print("skipping every " + str(skip) + " frames")
     if kmeansParameters != [5, 5, 0.1, 3]:
@@ -102,7 +102,7 @@ def average(specifiedFilename = "", showVideo = True, skip = 8, algorithm = "", 
     kmeansColors, kmeansIterations, kmeansThreshold, kmeansAttempts = kmeansParameters
 
     for fileName in allVideoFiles:
-        if specifiedFilename and fileName != specifiedFilename:
+        if targetFile and fileName != targetFile:
             pass 
 
         videoPath = os.path.join(videoDirectory, fileName)

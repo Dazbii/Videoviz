@@ -125,9 +125,9 @@ def _writeTopLeftRadial(file, numLines, width, height, outputName):
         image,
     )
 
-def generate(specifiedFilename = "", imageType = ""):
-    if specifiedFilename:
-        print("only generating for file: " + specifiedFilename)
+def generate(targetFile = "", imageType = ""):
+    if targetFile:
+        print("only generating for file: " + targetFile)
 
     lines = True  # Lines
     stb = True  # Starburst
@@ -161,7 +161,7 @@ def generate(specifiedFilename = "", imageType = ""):
     ]
 
     for directory in directories:
-        if specifiedFilename and directory != os.path.splitext(specifiedFilename)[0]:
+        if targetFile and directory != os.path.splitext(targetFile)[0]:
             pass 
 
         readingDirectory = os.path.join(csvDirectory, directory)
