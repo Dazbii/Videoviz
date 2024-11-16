@@ -5,12 +5,17 @@ from datetime import datetime
 import os
 import sys
 
-fileNames = ['foo.mp4', 'bar.mp4']
+fileExtensions = ['.webm', '.mkv', '.flv', '.vob', '.ogv', '.ogg', '.rrc', '.gifv', '.mng', '.mov', '.avi', '.qt', '.wmv', '.yuv', '.rm', '.asf', '.amv', '.mp4', '.m4p', '.m4v', '.mpg', '.mp2', '.mpeg', '.mpe', '.mpv', '.m4v', '.svi', '.3gp', '.3g2', '.mxf', '.roq', '.nsv', '.flv', '.f4v', '.f4p', '.f4a', '.f4b', '.mod']
+workingDirectory = os.getcwd()
+videoDirectory = os.path.join(workingDirectory, "videos")
+allFiles = [f for f in os.listdir(videoDirectory) if os.path.isfile(os.path.join(videoDirectory, f))]
+allVideoFiles = [f for f in allFiles if os.path.splitext(f)[1] in fileExtensions]
 
-for fileName in fileNames:
+for fileName in allVideoFiles:
 
-  workingDirectory = 'TODO'
-  # fileName = 'mononoke.mkv'
+  videoPath = os.path.join(videoDirectory, fileName)
+  outputPath = os.path.join(workingDirectory, "csvs", os.path.splitext(fileName)[0])
+
   skip = 8
   showVideo = True
   averageCalc = True
@@ -21,11 +26,10 @@ for fileName in fileNames:
   kmeansThreshold = 0.1
   kmeansAttempts = 3
 
-  cap = cv2.VideoCapture(workingDirectory + fileName)
+  cap = cv2.VideoCapture(videoPath)
   prevTime = datetime.now()
-  directoryName = fileName.split('.')[0]
-  if not os.path.exists(workingDirectory + directoryName):
-    os.makedirs(workingDirectory + directoryName)
+  if not os.path.exists(outputPath):
+    os.makedirs(outputPath)
 
   fps = cap.get(cv2.CAP_PROP_FPS)      # OpenCV2 version 2 used "CV_CAP_PROP_FPS"
   frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -34,9 +38,9 @@ for fileName in fileNames:
   print(fps)
 
   i = 0
-  with open(workingDirectory + directoryName + '/average.csv', 'a') as averageFile:
-    with open(workingDirectory + directoryName + '/trimmedAverage.csv', 'a') as trimmedAverageFile:
-      with open(workingDirectory + directoryName + '/kmeans.csv', 'a') as kmeansFile:
+  with open(os.path.join(outputPath, 'average.csv'), 'a') as averageFile:
+    with open(os.path.join(outputPath, 'trimmedAverage.csv'), 'a') as trimmedAverageFile:
+      with open(os.path.join(outputPath, 'kmeans.csv'), 'a') as kmeansFile:
         while(cap.isOpened()):
           ret, frame = cap.read()
           if not ret:
