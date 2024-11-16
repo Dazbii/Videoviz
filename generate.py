@@ -13,9 +13,6 @@ csvDirectory = os.path.join(workingDirectory, "csvs")
 outputDirectory = os.path.join(workingDirectory, "output")
 directories = ["mononoke"]
 filenames = ["average.csv", "kmeans.csv", "trimmedAverage.csv"]
-# filenames += 'average.csv'
-# filenames += 'kmeans.csv'
-# filenames += 'trimmedAverage.csv'
 
 def writeLines(file, skip, width, height, outputName):
     file.seek(0)
@@ -33,8 +30,6 @@ def writeLines(file, skip, width, height, outputName):
             image, (0, currentHeight), (width, currentHeight), values, 1
         )
         currentHeight += 1
-        # if currentHeight > height:
-        #     currentHeight = 0
 
     cv2.imwrite(
         outputName + "-lines.jpg", image
@@ -167,6 +162,4 @@ for directory in directories:
             if tlrad:
                 writeTopLeftRadial(file, skip, width, height, outputName)
 
-        # cv2.imshow('out', image)
-        # cv2.waitKey()
         cv2.destroyAllWindows()
