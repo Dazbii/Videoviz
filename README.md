@@ -22,3 +22,5 @@ Inspired by companies such as [MoviePalette](https://moviepalette.com/), [The Co
 
 ## Examples 🖼️
 Some examples of this program being run on Studio Ghibli's Princess Mononoke:
+![Lines generated from trimmed average](./examples/trimmedAverage-lines.jpg)
+![Top left radial generated from average](./examples/average-topLeftRadial.jpg)
