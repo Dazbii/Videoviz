@@ -55,15 +55,15 @@ The first step of the program. It will go through the video files given to it in
 ### Generate
 The second step of the program. It reads the .csv files from `Videoviz/csvs/` that were produced by the average step, and produces images from them, saving them in `Videoviz/output/`. There are several types of images it produces:
 - **Lines**: Horizontal lines, from the start of the movie at the top to the end at the bottom
-<img src=./examples/linesExample.jpg width=128> 
+   - <img src=./examples/linesExample.jpg width=128> 
 - **Starburst**: Straight lines radiating out from the center, the movie starts at 12 o clock and proceeds clockwise in a circle
-<img src=./examples/starburstExample.jpg width=128> 
+   - <img src=./examples/starburstExample.jpg width=128> 
 - **Top Left Starburst**: Straight lines radiating out from the top left, the movie starts at the top and proceeds in a 90 degree arc to end at the left side of the image
-<img src=./examples/TLstarburstExample.jpg width=128> 
-- **Radial**: The movie starts in a dot in the center of the image and proceeds in circles outwards, ending in the corners of the image
-<img src=./examples/radialExample.jpg width=128> 
-- **Top Left Radial**: The movie starts in a dot in the top left in the image and proceeds outwards in a 90 degree arc, ending in the bottom right corner of the image
-<img src=./examples/TLradialExample.jpg width=128> 
+   - <img src=./examples/TLstarburstExample.jpg width=128> 
+- **Radial**: Circles expanding out from the center, the movie starts in a dot in the center and ends in the corners of the image
+   - <img src=./examples/radialExample.jpg width=128> 
+- **Top Left Radial**: Circles exanding out from the top left, the movie starts in a dot in the top left in the image and proceeds outwards in a 90 degree arc, ending in the bottom right corner of the image
+   - <img src=./examples/TLradialExample.jpg width=128> 
 
 #### Options:
 `--targetFile`
