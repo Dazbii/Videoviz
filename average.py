@@ -103,7 +103,7 @@ def average(targetFile = "", showVideo = True, skip = 8, algorithm = "", kmeansP
 
     for fileName in allVideoFiles:
         if targetFile and fileName != targetFile:
-            pass 
+            continue 
 
         videoPath = os.path.join(videoDirectory, fileName)
         outputPath = os.path.join(workingDirectory, "csvs", os.path.splitext(fileName)[0])

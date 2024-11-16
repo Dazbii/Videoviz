@@ -162,7 +162,7 @@ def generate(targetFile = "", imageType = ""):
 
     for directory in directories:
         if targetFile and directory != os.path.splitext(targetFile)[0]:
-            pass 
+            continue 
 
         readingDirectory = os.path.join(csvDirectory, directory)
         writingDirectory = os.path.join(outputDirectory, directory)
