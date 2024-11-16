@@ -44,7 +44,7 @@ def _writeStarburst(file, numLines, width, height, outputName):
                 center[1] + int(cornerDistance * np.cos(np.pi + 2 * np.pi * r / numLines)),
             ),
             values,
-            1,
+            4,
         )
         r -= 1
 
@@ -69,7 +69,7 @@ def _writeTopLeftStarburst(file, numLines, width, height, outputName):
                 int(cornerDistance * np.cos(0.5 * np.pi * r / numLines)),
             ),
             values,
-            1,
+            4,
         )
         r -= 1
 
@@ -182,8 +182,6 @@ def generate(targetFile = "", imageType = ""):
 
             numLines = sum(1 for line in open(filePath))
             skip = int(numLines / tempHeight - 1)
-            print(numLines)
-            print(skip)
 
             height = int(numLines / (skip + 1))
             width = int((height / tempHeight) * tempWidth)
