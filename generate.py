@@ -11,10 +11,9 @@ tlrad = True  # Top Left Radial
 workingDirectory = os.getcwd()
 csvDirectory = os.path.join(workingDirectory, "csvs")
 outputDirectory = os.path.join(workingDirectory, "output")
-directories = ["mononoke"]
 filenames = ["average.csv", "kmeans.csv", "trimmedAverage.csv"]
 
-def writeLines(file, skip, width, height, outputName):
+def _writeLines(file, skip, width, height, outputName):
     file.seek(0)
     image = np.zeros((height, width, 3), np.uint8)
     currentHeight = 0
@@ -35,7 +34,7 @@ def writeLines(file, skip, width, height, outputName):
         outputName + "-lines.jpg", image
     )
 
-def writeStarburst(file, skip, width, height, outputName):
+def _writeStarburst(file, numLines, width, height, outputName):
     file.seek(0)
     image = np.zeros((height, width, 3), np.uint8)
     r = 0
@@ -59,7 +58,7 @@ def writeStarburst(file, skip, width, height, outputName):
     )
     image = np.zeros((height, width, 3), np.uint8)
 
-def writeTopLeftStarburst(file, skip, width, height, outputName):
+def _writeTopLeftStarburst(file, numLines, width, height, outputName):
     file.seek(0)
     image = np.zeros((height, width, 3), np.uint8)
     r = 0
@@ -83,7 +82,7 @@ def writeTopLeftStarburst(file, skip, width, height, outputName):
     )
     image = np.zeros((height, width, 3), np.uint8)
 
-def writeRadial(file, skip, width, height, outputName):
+def _writeRadial(file, numLines, width, height, outputName):
     file.seek(0)
     image = np.zeros((height, width, 3), np.uint8)
     r = 0
@@ -106,7 +105,7 @@ def writeRadial(file, skip, width, height, outputName):
     )
     image = np.zeros((height, width, 3), np.uint8)
 
-def writeTopLeftRadial(file, skip, width, height, outputName):
+def _writeTopLeftRadial(file, numLines, width, height, outputName):
     file.seek(0)
     image = np.zeros((height, width, 3), np.uint8)
     r = 0
@@ -128,38 +127,42 @@ def writeTopLeftRadial(file, skip, width, height, outputName):
         image,
     )
 
-for directory in directories:
-    readingDirectory = os.path.join(csvDirectory, directory)
-    writingDirectory = os.path.join(outputDirectory, directory)
-    if not os.path.exists(writingDirectory):
-        os.makedirs(writingDirectory)
+def generate():
+    directories = [
+        f for f in os.listdir(csvDirectory) if os.path.isdir(os.path.join(csvDirectory, f))
+    ]
+    for directory in directories:
+        readingDirectory = os.path.join(csvDirectory, directory)
+        writingDirectory = os.path.join(outputDirectory, directory)
+        if not os.path.exists(writingDirectory):
+            os.makedirs(writingDirectory)
 
-    for filename in filenames:
-        filePath = os.path.join(readingDirectory, filename)
-        outputName = os.path.join(writingDirectory, os.path.splitext(filename)[0])
+        for filename in filenames:
+            filePath = os.path.join(readingDirectory, filename)
+            outputName = os.path.join(writingDirectory, os.path.splitext(filename)[0])
 
-        factor = 1
-        tempWidth = int(5440 * factor)
-        tempHeight = int(8480 * factor)
+            factor = 1
+            tempWidth = int(5440 * factor)
+            tempHeight = int(8480 * factor)
 
-        numLines = sum(1 for line in open(filePath))
-        skip = int(numLines / tempHeight - 1)
+            numLines = sum(1 for line in open(filePath))
+            skip = int(numLines / tempHeight - 1)
 
-        height = int(numLines / (skip + 1))
-        width = int((height / tempHeight) * tempWidth)
+            height = int(numLines / (skip + 1))
+            width = int((height / tempHeight) * tempWidth)
 
-        image = np.zeros((height, width, 3), np.uint8)
+            image = np.zeros((height, width, 3), np.uint8)
 
-        with open(filePath) as file:
-            if lines:
-                writeLines(file, skip, width, height, outputName)
-            if stb:
-                writeStarburst(file, skip, width, height, outputName)
-            if tlstb:
-                writeTopLeftStarburst(file, skip, width, height, outputName)
-            if rad:
-                writeRadial(file, skip, width, height, outputName)
-            if tlrad:
-                writeTopLeftRadial(file, skip, width, height, outputName)
+            with open(filePath) as file:
+                if lines:
+                    _writeLines(file, skip, width, height, outputName)
+                if stb:
+                    _writeStarburst(file, numLines, width, height, outputName)
+                if tlstb:
+                    _writeTopLeftStarburst(file, numLines, width, height, outputName)
+                if rad:
+                    _writeRadial(file, numLines, width, height, outputName)
+                if tlrad:
+                    _writeTopLeftRadial(file, numLines, width, height, outputName)
 
-        cv2.destroyAllWindows()
+            cv2.destroyAllWindows()
