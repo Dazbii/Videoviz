@@ -173,12 +173,17 @@ def generate(targetFile = "", imageType = ""):
             filePath = os.path.join(readingDirectory, filename)
             outputName = os.path.join(writingDirectory, os.path.splitext(filename)[0])
 
+            if not os.path.isfile(filePath):
+                continue
+
             factor = 1
             tempWidth = int(5440 * factor)
             tempHeight = int(8480 * factor)
 
             numLines = sum(1 for line in open(filePath))
             skip = int(numLines / tempHeight - 1)
+            print(numLines)
+            print(skip)
 
             height = int(numLines / (skip + 1))
             width = int((height / tempHeight) * tempWidth)
