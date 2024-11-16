@@ -55,22 +55,59 @@ allFiles = [
 allVideoFiles = [f for f in allFiles if os.path.splitext(f)[1] in fileExtensions]
 longestFilename = max(allVideoFiles, key=len)
 
-def average():
+def _handleAlgorithm(algorithm):
+    averageCalc = True
+    trimmedAverageCalc = True
+    kmeansCalc = True
+
+    if algorithm:
+        if algorithm == "average":
+            print("calculating only average")
+            trimmedAverageCalc = False
+            kmeansCalc = False
+        if algorithm == "trimmedAverage":
+            print("calculating only trimmed average")
+            averageCalc = False
+            kmeansCalc = False
+        if algorithm == "kmeans":
+            print("calculating only kmeans")
+            averageCalc = False
+            trimmedAverageCalc = False
+        if algorithm == "noaverage":
+            print("skipping average calculation")
+            averageCalc = False
+        if algorithm == "notrimmedAverage":
+            print("skipping trimmed average calculation")
+            trimmedAverageCalc = False
+        if algorithm == "nokmeans":
+            print("skipping kmeans calculation")
+            kmeansCalc = False
+
+    return averageCalc, trimmedAverageCalc, kmeansCalc
+
+    
+
+def average(specifiedFilename = "", showVideo = True, skip = 8, algorithm = "", kmeansParameters = [5, 5, 0.1, 3]):
+    if specifiedFilename:
+        print("only processing file: " + specifiedFilename)
+    if skip != 8:
+        print("skipping every " + str(skip) + " frames")
+    if kmeansParameters != [5, 5, 0.1, 3]:
+        print("calculating kmeans with " + str(kmeansParameters[0]) + " colors, "
+              + str(kmeansParameters[1]) + " iterations, "
+              + str(kmeansParameters[3]) + " attempts, and a threshold of "
+              + str(kmeansParameters[2]))
+
+    averageCalc, trimmedAverageCalc, kmeansCalc = _handleAlgorithm(algorithm)
+    kmeansColors, kmeansIterations, kmeansThreshold, kmeansAttempts = kmeansParameters
+
     for fileName in allVideoFiles:
+        if specifiedFilename and fileName != specifiedFilename:
+            pass 
 
         videoPath = os.path.join(videoDirectory, fileName)
         outputPath = os.path.join(workingDirectory, "csvs", os.path.splitext(fileName)[0])
-
-        skip = 8
-        showVideo = True
-        averageCalc = True
-        trimmedAverageCalc = True
-        kmeansCalc = True
-        kmeansColors = 5
-        kmeansIterations = 5
-        kmeansThreshold = 0.1
-        kmeansAttempts = 3
-
+                
         cap = cv2.VideoCapture(videoPath)
         prevTime = datetime.now()
         if not os.path.exists(outputPath):
@@ -215,3 +252,6 @@ def average():
 
         cap.release()
         cv2.destroyAllWindows()
+    
+    print("")
+    print("Successfully completed averaging!")

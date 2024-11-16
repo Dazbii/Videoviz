@@ -2,12 +2,6 @@ import numpy as np
 import cv2
 import os
 
-lines = True  # Lines
-stb = True  # Starburst
-tlstb = True  # Top Left Starburst
-rad = True  # Radial
-tlrad = True  # Top Left Radial
-
 workingDirectory = os.getcwd()
 csvDirectory = os.path.join(workingDirectory, "csvs")
 outputDirectory = os.path.join(workingDirectory, "output")
@@ -37,20 +31,22 @@ def _writeLines(file, skip, width, height, outputName):
 def _writeStarburst(file, numLines, width, height, outputName):
     file.seek(0)
     image = np.zeros((height, width, 3), np.uint8)
-    r = 0
+    r = numLines
+    center = (int(width / 2), int(height / 2))
+    cornerDistance = np.sqrt((width/2) ** 2 +(height/2) ** 2)
     for line in file:
         values = np.array(line.split(", ")).astype(float)
         cv2.line(
             image,
-            (250, 250),
+            center,
             (
-                250 + int(500 * np.sin(2 * np.pi * r / numLines)),
-                250 + int(500 * np.cos(2 * np.pi * r / numLines)),
+                center[0] + int(cornerDistance * np.sin(np.pi + 2 * np.pi * r / numLines)),
+                center[1] + int(cornerDistance * np.cos(np.pi + 2 * np.pi * r / numLines)),
             ),
             values,
             1,
         )
-        r += 1
+        r -= 1
 
     cv2.imwrite(
         outputName + "-centeredStarburst.jpg",
@@ -61,20 +57,21 @@ def _writeStarburst(file, numLines, width, height, outputName):
 def _writeTopLeftStarburst(file, numLines, width, height, outputName):
     file.seek(0)
     image = np.zeros((height, width, 3), np.uint8)
-    r = 0
+    r = numLines
+    cornerDistance = np.sqrt(width ** 2 + height ** 2)
     for line in file:
         values = np.array(line.split(", ")).astype(float)
         cv2.line(
             image,
             (0, 0),
             (
-                int(1000 * np.sin(0.5 * np.pi * r / numLines)),
-                int(1000 * np.cos(0.5 * np.pi * r / numLines)),
+                int(cornerDistance * np.sin(0.5 * np.pi * r / numLines)),
+                int(cornerDistance * np.cos(0.5 * np.pi * r / numLines)),
             ),
             values,
             1,
         )
-        r += 1
+        r -= 1
 
     cv2.imwrite(
         outputName + "-topLeftStarburst.jpg",
@@ -87,11 +84,12 @@ def _writeRadial(file, numLines, width, height, outputName):
     image = np.zeros((height, width, 3), np.uint8)
     r = 0
     radius = np.sqrt(height**2 + width**2) / 2
+    center = (int(width / 2), int(height / 2))
     for line in file:
         values = np.array(line.split(", ")).astype(float)
         cv2.circle(
             image,
-            (250, 250),
+            center,
             int(radius * r / numLines),
             values,
             2,
@@ -127,11 +125,45 @@ def _writeTopLeftRadial(file, numLines, width, height, outputName):
         image,
     )
 
-def generate():
+def generate(specifiedFilename = "", imageType = ""):
+    if specifiedFilename:
+        print("only generating for file: " + specifiedFilename)
+
+    lines = True  # Lines
+    stb = True  # Starburst
+    tlstb = True  # Top Left Starburst
+    rad = True  # Radial
+    tlrad = True  # Top Left Radial
+    if imageType and imageType in ["lines", "starburst", "TLstarburst", "radial", "TLradial"]:
+        lines = False
+        stb = False
+        tlstb = False
+        rad = False
+        tlrad = False
+        if imageType == "lines":
+            print("only generating lines images")
+            lines = True
+        if imageType == "starburst":
+            print("only generating starburst images")
+            stb = True
+        if imageType == "TLstarburst":
+            print("only generating top left starburst images")
+            tlstb = True
+        if imageType == "radial":
+            print("only generating radial images")
+            rad = True
+        if imageType == "TLradial":
+            print("only generating top left radial images")
+            tlrad = True
+            
     directories = [
         f for f in os.listdir(csvDirectory) if os.path.isdir(os.path.join(csvDirectory, f))
     ]
+
     for directory in directories:
+        if specifiedFilename and directory != os.path.splitext(specifiedFilename)[0]:
+            pass 
+
         readingDirectory = os.path.join(csvDirectory, directory)
         writingDirectory = os.path.join(outputDirectory, directory)
         if not os.path.exists(writingDirectory):
@@ -151,18 +183,23 @@ def generate():
             height = int(numLines / (skip + 1))
             width = int((height / tempHeight) * tempWidth)
 
-            image = np.zeros((height, width, 3), np.uint8)
-
             with open(filePath) as file:
                 if lines:
+                    print("generating lines for " + os.path.splitext(filename)[0] + " of " + directory + "...")
                     _writeLines(file, skip, width, height, outputName)
                 if stb:
+                    print("generating starburst for " + os.path.splitext(filename)[0] + " of " + directory + "...")
                     _writeStarburst(file, numLines, width, height, outputName)
                 if tlstb:
+                    print("generating top left starburst for " + os.path.splitext(filename)[0] + " of " + directory + "...")
                     _writeTopLeftStarburst(file, numLines, width, height, outputName)
                 if rad:
+                    print("generating radial for " + os.path.splitext(filename)[0] + " of " + directory + "...")
                     _writeRadial(file, numLines, width, height, outputName)
                 if tlrad:
+                    print("generating top left radial for " + os.path.splitext(filename)[0] + " of " + directory + "...")
                     _writeTopLeftRadial(file, numLines, width, height, outputName)
 
             cv2.destroyAllWindows()
+    
+    print("Successfully completed generating images!")
